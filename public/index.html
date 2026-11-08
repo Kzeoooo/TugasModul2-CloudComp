@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CloudNotes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>☁️ CloudNotes</h1>
+    <p>Catatan sederhana yang berjalan di Docker pada Azure VM</p>
+  </header>
+
+  <main>
+    <section class="card" id="info">
+      <h2>Info Sistem</h2>
+      <dl id="info-list"><dt>Memuat...</dt></dl>
+    </section>
+
+    <section class="card">
+      <h2>Tambah Catatan</h2>
+      <form id="note-form">
+        <input type="text" id="title" placeholder="Judul" maxlength="150" required>
+        <textarea id="content" placeholder="Isi catatan" rows="3" required></textarea>
+        <button type="submit">Simpan</button>
+      </form>
+      <p id="msg" class="msg"></p>
+    </section>
+
+    <section class="card">
+      <h2>Daftar Catatan</h2>
+      <ul id="notes"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

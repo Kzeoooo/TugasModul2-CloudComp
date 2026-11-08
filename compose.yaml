@@ -1,0 +1,63 @@
+name: cloudnotes
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cloudnotes-app:latest
+    container_name: cloudnotes-app
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:80:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DB_HOST: database
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE:-cloudnotes}
+      DB_USERNAME: ${DB_USERNAME:-cloudnotes}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD wajib diisi di file .env}
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - frontend
+      - backend
+
+  database:
+    image: mysql:8.4
+    container_name: cloudnotes-db
+    restart: unless-stopped
+    # Tidak ada "ports:" -> database tidak dipublikasikan ke luar VM
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD wajib diisi di file .env}
+      MYSQL_DATABASE: ${DB_DATABASE:-cloudnotes}
+      MYSQL_USER: ${DB_USERNAME:-cloudnotes}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD wajib diisi di file .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - backend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true   # tidak ada akses keluar/masuk dari luar Docker
+
+volumes:
+  mysql_data:

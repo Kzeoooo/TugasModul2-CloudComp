@@ -1,0 +1,14 @@
+{
+  "name": "cloudnotes",
+  "version": "1.0.0",
+  "description": "CloudNotes - aplikasi catatan sederhana (Express + MySQL) untuk tugas Komputasi Awan",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mysql2": "^3.11.5"
+  }
+}
